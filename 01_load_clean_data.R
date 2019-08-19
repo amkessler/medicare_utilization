@@ -3,6 +3,10 @@
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(readxl)
+
+
+# INPATIENT ------------------------------------------------
 
 # find all file inpatient csv files
 csv_files <- fs::dir_ls("raw_data/inpatient", regexp = "\\.csv$")
@@ -33,4 +37,37 @@ inp_data <- inp_data %>%
 
 
 #save to RDS
-saveRDS(inp_data, "processed_data/inp_data_2014to2016.rds")
+saveRDS(inp_data, "processed_data/inp_data_processed.rds")
+
+
+
+# OUTPATIENT ------------------------------------------------
+
+
+
+raw_out_1 <- read_excel("raw_data/outpatient/Medicare_OPPS_CY2016_Provider_APC.xlsx", skip = 4,
+                                                             col_types = c("text", "text", "text", 
+                                                                           "text", "text", "text", "text", "text", 
+                                                                           "text", "text", "numeric", "numeric", 
+                                                                           "numeric", "numeric", "numeric")) 
+
+
+raw_out_2 <- read_excel("raw_data/outpatient/Medicare_OPPS_CY2015_Provider_APC.xlsx", skip = 4,
+                        col_types = c("text", "text", "text", 
+                                      "text", "text", "text", "text", "text", 
+                                      "text", "text", "numeric", "numeric", 
+                                      "numeric", "numeric", "numeric")) 
+
+
+raw_out_1$year <- "FY2016"
+raw_out_2$year <- "FY2015"
+
+out_combined <- bind_rows(raw_out_1, raw_out_2)
+
+outp_data <- out_combined %>% 
+  clean_names() %>% 
+  select(year, everything())
+
+#save to RDS
+saveRDS(outp_data, "processed_data/outp_data_processed.rds")
+
