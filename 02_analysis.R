@@ -15,3 +15,6 @@ outp_data <- readRDS("processed_data/outp_data_processed.rds")
 inp_data %>% 
   count(drg_definition) 
 
+outp_data %>% 
+  count(apc_description) 
+
