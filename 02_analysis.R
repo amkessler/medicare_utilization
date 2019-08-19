@@ -35,3 +35,29 @@ outp_data %>%
   count(apc_description) 
 
 
+#NM hospitals
+inp_data %>% 
+  filter(provider_state == "NM") %>% 
+  count(provider_name) %>% 
+  View()
+
+
+#NM target hospitals
+nm_targets_inp <- inp_data %>% 
+  filter(provider_state == "NM",
+         provider_name %in% c("CARLSBAD MEDICAL CENTER", "ARTESIA GENERAL HOSPITAL"))
+
+nm_targets_inp %>% 
+  count(drg_definition) %>% 
+  View()
+
+
+nm_targets_outp <- outp_data %>% 
+  mutate(
+    provider_name = str_to_upper(provider_name)
+  ) %>% 
+  filter(provider_name %in% c("CARLSBAD MEDICAL CENTER", "ARTESIA GENERAL HOSPITAL"))
+
+nm_targets_outp %>% 
+  count(apc_description)
+
